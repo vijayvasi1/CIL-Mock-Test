@@ -61,8 +61,8 @@ export const QuizConsole: React.FC<QuizConsoleProps> = ({
   const questions = normalizeQuestions(rawQuestions);
 
   // Time Calculation: Standard CIL CBT format (~54 sec/question, e.g. 90 mins for 100 Qs)
-  //const initialTimeSeconds = Math.max(600, questions.length * 54);
-  const initialTimeSeconds = 1 * 60;
+  const initialTimeSeconds = Math.max(600, questions.length * 54);
+  //const initialTimeSeconds = 1 * 60;
   const [secondsRemaining, setSecondsRemaining] = useState<number>(initialTimeSeconds);
   const [isTimeUp, setIsTimeUp] = useState<boolean>(false);
 

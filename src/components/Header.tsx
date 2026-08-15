@@ -1,17 +1,21 @@
 import React from "react";
-import { BookOpen, BarChart3, Sparkles, Layers, GraduationCap, Sun, Moon } from "lucide-react";
+import { BookOpen, BarChart3, Sparkles, Layers, GraduationCap, Sun, Moon, LogOut, UserCheck } from "lucide-react";
 import { useTheme } from "../context/ThemeContext";
 
 interface HeaderProps {
   activeTab: "quiz" | "research" | "analytics" | "resources";
   setActiveTab: (tab: "quiz" | "research" | "analytics" | "resources") => void;
   onOpenGenerator: () => void;
+  currentUser?: string | null;
+  onLogout?: () => void;
 }
 
 export const Header: React.FC<HeaderProps> = ({
   activeTab,
   setActiveTab,
   onOpenGenerator,
+  currentUser,
+  onLogout,
 }) => {
   const { theme, toggleTheme } = useTheme();
 
@@ -93,7 +97,7 @@ export const Header: React.FC<HeaderProps> = ({
             </button>
           </nav>
 
-          {/* Right Action Icons: AI Generator & Theme Toggle */}
+          {/* Right Action Icons: AI Generator & Theme Toggle & User Auth */}
           <div className="flex items-center gap-1.5 sm:gap-2 shrink-0">
             {/* AI Real-Time Generator Action Button */}
             <button
@@ -118,6 +122,24 @@ export const Header: React.FC<HeaderProps> = ({
                 <Moon className="w-4 h-4 text-slate-300" />
               )}
             </button>
+
+            {/* Current Logged In User Badge & Logout */}
+            {currentUser && onLogout && (
+              <div className="flex items-center gap-1.5 pl-1 sm:pl-2 border-l border-slate-800">
+                <div className="hidden xl:flex items-center gap-1.5 px-2 py-1 rounded-lg bg-slate-800/80 border border-slate-700 text-xs text-amber-300 font-medium">
+                  <UserCheck className="w-3.5 h-3.5 text-emerald-400" />
+                  <span className="font-mono">{currentUser}</span>
+                </div>
+                <button
+                  onClick={onLogout}
+                  className="flex items-center gap-1 p-2 sm:px-2.5 sm:py-1.5 rounded-lg bg-red-950/40 hover:bg-red-900/60 text-red-300 border border-red-500/30 transition-all text-xs font-bold cursor-pointer"
+                  title="Sign Out of CBT Examination Portal"
+                >
+                  <LogOut className="w-3.5 h-3.5" />
+                  <span className="hidden sm:inline">Logout</span>
+                </button>
+              </div>
+            )}
           </div>
         </div>
       </div>

@@ -13,7 +13,33 @@ import { FRESH_PAPER1_QUESTIONS } from "./data/researchData";
 import { loadSavedDynamicSets } from "./data/allSetsData";
 import { initAllQuizData } from "./data/rawQuizData";
 
+import React, { useState, useEffect } from "react";
+import { Header } from "./components/Header";
+import { SetSelector } from "./components/SetSelector";
+import { ResearchHub } from "./components/ResearchHub";
+import { AnalyticsView } from "./components/AnalyticsView";
+import { StudyResources } from "./components/StudyResources";
+import { QuizConsole } from "./components/QuizConsole";
+import { ResultSummary } from "./components/ResultSummary";
+import { LiveGeneratorModal } from "./components/LiveGeneratorModal";
+import { LoginPage } from "./components/LoginPage";
+import { ThemeProvider } from "./context/ThemeContext";
+import { Question } from "./types";
+import { FRESH_PAPER1_QUESTIONS } from "./data/researchData";
+import { loadSavedDynamicSets } from "./data/allSetsData";
+import { initAllQuizData } from "./data/rawQuizData";
+
+const AUTH_USER_KEY = "cil_logged_in_user";
+
 export default function App() {
+  const [currentUser, setCurrentUser] = useState<string | null>(() => {
+    try {
+      return localStorage.getItem(AUTH_USER_KEY);
+    } catch {
+      return null;
+    }
+  });
+
   const [activeTab, setActiveTab] = useState<"quiz" | "research" | "analytics" | "resources">("quiz");
   const [activeQuiz, setActiveQuiz] = useState<{
     questions: Question[];
@@ -36,6 +62,31 @@ export default function App() {
     initAllQuizData();
     loadSavedDynamicSets();
   }, []);
+
+  const handleLoginSuccess = (user: string) => {
+    setCurrentUser(user);
+    try {
+      localStorage.setItem(AUTH_USER_KEY, user);
+    } catch {
+      // ignore
+    }
+  };
+
+  const handleLogout = () => {
+    setCurrentUser(null);
+    setActiveQuiz(null);
+    setTestResult(null);
+    try {
+      localStorage.removeItem(AUTH_USER_KEY);
+    } catch {
+      // ignore
+    }
+  };
+
+  // If user is not authenticated, render only the secure login screen
+  if (!currentUser) {
+    return <LoginPage onLoginSuccess={handleLoginSuccess} />;
+  }
 
   const handleStartQuiz = (
     questions: Question[],
@@ -102,6 +153,8 @@ export default function App() {
             }
           }}
           onOpenGenerator={() => setIsGeneratorOpen(true)}
+          currentUser={currentUser}
+          onLogout={handleLogout}
         />
 
         {/* Main Content Body */}
