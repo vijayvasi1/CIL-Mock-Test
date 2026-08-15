@@ -133,6 +133,7 @@ ${customPrompt ? `Specific focus request: "${customPrompt}".` : ""}
 Ensure each question has:
 - Exactly 4 non-empty options.
 - Exactly 1 unambiguously correct option index (0 to 3).
+- A difficulty tag: "Easy", "Medium", or "Hard".
 - A concise, high-yield explanation "exp" explicitly stating:
   1) Why the answer is right
   2) What it is / definition
@@ -140,7 +141,7 @@ Ensure each question has:
 
     const userPrompt = `Generate ${numQuestions} high-probability questions for CIL MT System ${targetPaper === "p1" ? "Paper 1" : "Paper 2"}${section ? ` - Section "${section}"` : ""}.
 ${customPrompt ? `User focus: ${customPrompt}` : "Focus on latest 2025-2026 examination trends, accurate standard concepts, and Coal India Limited / Computer Science fundamentals."}
-Return a structured JSON list of questions with explanation fields.`;
+Return a structured JSON list of questions with difficulty and explanation fields.`;
 
     const config: any = {
       systemInstruction: systemPrompt,
@@ -157,6 +158,7 @@ Return a structured JSON list of questions with explanation fields.`;
               items: { type: Type.STRING },
             },
             ans: { type: Type.INTEGER },
+            difficulty: { type: Type.STRING, enum: ["Easy", "Medium", "Hard"] },
             exp: { type: Type.STRING },
           },
           required: ["section", "q", "opts", "ans", "exp"],
@@ -234,6 +236,184 @@ Return a structured JSON list of questions with explanation fields.`;
         ? "AI generation quota limit reached (429). Loaded verified high-probability CIL MT System mock test."
         : "Live AI generation unavailable. Loaded verified high-probability CIL MT System mock test.",
       groundingChunks: [],
+    });
+  }
+});
+
+// API: AI-Powered Personalized Study Schedule Generator
+app.post("/api/generate-study-schedule", async (req, res) => {
+  const {
+    weakTopics = [],
+    hardQuestionsFailed = [],
+    daysCount = 7,
+    dailyHours = 4,
+    userCategory = "General / Computer Science",
+  } = req.body;
+
+  const validDays = Math.min(Math.max(Number(daysCount) || 7, 3), 30);
+  const validHours = Math.min(Math.max(Number(dailyHours) || 4, 1), 12);
+
+  const fallbackSchedule = (topics: string[], hardList: string[]) => {
+    const identified = topics.length > 0 ? topics : ["Operating Systems & Deadlocks", "DBMS Normalization & B+ Trees", "Coal India Coal Production & PSU Policies", "Quantitative Arithmetic & Time-Work", "Computer Networks Subnetting"];
+    
+    const days = [];
+    const paperCycle = ["Paper II (CS & IT)", "Paper I (Aptitude)", "Paper II (CS & IT)", "Paper I (Aptitude)", "Full Mock & Revision"] as const;
+
+    for (let i = 1; i <= validDays; i++) {
+      const isLastDay = i === validDays;
+      const isSecondToLast = i === validDays - 1;
+      const paper = isLastDay ? "Full Mock & Revision" : paperCycle[(i - 1) % paperCycle.length];
+      const topicIndex = (i - 1) % identified.length;
+      const primeTopic = identified[topicIndex] || "Core Fundamentals Review";
+      const secondaryTopic = identified[(topicIndex + 1) % identified.length] || "Formula Drills";
+
+      days.push({
+        dayNumber: i,
+        dayTitle: isLastDay
+          ? "Final Speed Drills & High-Yield Formula Recap"
+          : isSecondToLast
+          ? "Full-Length 200 Marks Simulation & Weak Spot Patching"
+          : `Intensive Target Drill: ${primeTopic}`,
+        focusPaper: paper,
+        timeCommitment: `${validHours} Hours (${Math.round(validHours * 0.6)}h Core Review + ${Math.round(validHours * 0.4)}h Mock MCQ)`,
+        keyObjectives: [
+          `Master high-probability CIL MT test patterns for ${primeTopic}`,
+          `Eliminate recurring errors in ${secondaryTopic}`,
+          `Practice minimum ${validHours * 15} timed MCQ questions`,
+        ],
+        revisionTopics: [
+          primeTopic,
+          secondaryTopic,
+          i % 2 === 0 ? "CIL History, Coal Production Targets & Carbon Neutrality" : "Data Structures & Algorithm Complexities",
+        ],
+        practiceTarget: `Complete 1 targeted 50-MCQ session + review all missed questions in ${primeTopic}`,
+        proTips: i % 2 === 1
+          ? "Time yourself strictly at 54 seconds per question to build natural speed for the 200 Qs / 180 Min format."
+          : "Never leave negative marking fear unchecked: remember CIL MT has NO negative marking, but accuracy ensures a top merit rank.",
+      });
+    }
+
+    return {
+      title: `Personalized ${validDays}-Day CIL MT (System) Remediation Schedule`,
+      durationDays: validDays,
+      dailyHours: validHours,
+      generatedAt: new Date().toISOString(),
+      weakTopicsIdentified: identified,
+      summaryDiagnosis: `Based on your recent mock test diagnostics, your high-priority remediation areas are focused on ${identified.slice(0, 3).join(", ")}. Dedicating ${validHours} hours daily using this paced plan will systematically patch conceptual gaps.`,
+      days,
+    };
+  };
+
+  const ai = getGeminiClient();
+
+  if (!ai) {
+    return res.json({
+      success: true,
+      schedule: fallbackSchedule(weakTopics, hardQuestionsFailed),
+      aiGenerated: false,
+    });
+  }
+
+  try {
+    const prompt = `You are the lead academic strategist for Coal India Limited (CIL) Management Trainee (System) CBT Examination.
+The user has completed mock tests and struggles with these specific 'Hard' or weak topics:
+Weak Topics & Error Hotspots: ${weakTopics.length > 0 ? weakTopics.join(", ") : "Operating Systems, SQL Normalization, Reasoning Syllogisms, Coal Sector Data"}
+Hard Questions Missed: ${hardQuestionsFailed.slice(0, 5).join(" | ")}
+Available Study Window: ${validDays} Days, ${validHours} Hours per day.
+
+Generate a comprehensive, scientifically organized day-by-day study schedule to turn their weak areas into strengths before the CIL MT exam.
+Follow the exact JSON schema provided.`;
+
+    const response = await ai.models.generateContent({
+      model: "gemini-3.7-flash",
+      contents: prompt,
+      config: {
+        responseMimeType: "application/json",
+        responseSchema: {
+          type: Type.OBJECT,
+          properties: {
+            title: { type: Type.STRING },
+            durationDays: { type: Type.INTEGER },
+            dailyHours: { type: Type.INTEGER },
+            generatedAt: { type: Type.STRING },
+            weakTopicsIdentified: {
+              type: Type.ARRAY,
+              items: { type: Type.STRING },
+            },
+            summaryDiagnosis: { type: Type.STRING },
+            days: {
+              type: Type.ARRAY,
+              items: {
+                type: Type.OBJECT,
+                properties: {
+                  dayNumber: { type: Type.INTEGER },
+                  dayTitle: { type: Type.STRING },
+                  focusPaper: {
+                    type: Type.STRING,
+                    enum: [
+                      "Paper I (Aptitude)",
+                      "Paper II (CS & IT)",
+                      "Full Mock & Revision",
+                    ],
+                  },
+                  timeCommitment: { type: Type.STRING },
+                  keyObjectives: {
+                    type: Type.ARRAY,
+                    items: { type: Type.STRING },
+                  },
+                  revisionTopics: {
+                    type: Type.ARRAY,
+                    items: { type: Type.STRING },
+                  },
+                  practiceTarget: { type: Type.STRING },
+                  proTips: { type: Type.STRING },
+                },
+                required: [
+                  "dayNumber",
+                  "dayTitle",
+                  "focusPaper",
+                  "timeCommitment",
+                  "keyObjectives",
+                  "revisionTopics",
+                  "practiceTarget",
+                  "proTips",
+                ],
+              },
+            },
+          },
+          required: [
+            "title",
+            "durationDays",
+            "dailyHours",
+            "weakTopicsIdentified",
+            "summaryDiagnosis",
+            "days",
+          ],
+        },
+      },
+    });
+
+    const parsed = JSON.parse(response.text || "{}");
+    if (parsed.days && Array.isArray(parsed.days) && parsed.days.length > 0) {
+      return res.json({
+        success: true,
+        schedule: parsed,
+        aiGenerated: true,
+      });
+    }
+
+    return res.json({
+      success: true,
+      schedule: fallbackSchedule(weakTopics, hardQuestionsFailed),
+      aiGenerated: false,
+    });
+  } catch (err: any) {
+    console.error("Error generating AI study schedule:", err);
+    return res.json({
+      success: true,
+      schedule: fallbackSchedule(weakTopics, hardQuestionsFailed),
+      aiGenerated: false,
+      warning: "Schedule generated with built-in CIL MT heuristic engine.",
     });
   }
 });

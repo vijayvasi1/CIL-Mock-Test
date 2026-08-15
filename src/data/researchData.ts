@@ -1299,9 +1299,9 @@ export const FRESH_PAPER1_QUESTIONS: Question[] = [
   {
     section: "Reasoning",
     q: "If in a certain code 'MINING' is written as 'NJOHOH', how will 'ENERGY' be coded in that same pattern?",
-    opts: ["FOHSHZ", "FOFSHZ", "FOGSHZ", "EPFSHZ"],
+    opts: ["FOFSHZ", "FOHSHZ", "FOGSHZ", "EPFSHZ"],
     ans: 0,
-    exp: "Each letter is shifted forward by +1: E->F, N->O, E->F, R->S, G->H, Y->Z gives FOFSHZ (or FOHSHZ depending on second N->O). For E(+1)=F, N(+1)=O, E(+1)=F, R(+1)=S, G(+1)=H, Y(+1)=Z => FOFSHZ.",
+    exp: "Each letter is shifted forward by +1 in alphabetical order: E(+1)=F, N(+1)=O, E(+1)=F, R(+1)=S, G(+1)=H, Y(+1)=Z, yielding 'FOFSHZ'.",
   },
   {
     section: "Reasoning",
@@ -1356,8 +1356,8 @@ export const FRESH_PAPER1_QUESTIONS: Question[] = [
     section: "Reasoning",
     q: "If today is Tuesday, what day of the week will it be after 65 days?",
     opts: ["Wednesday", "Thursday", "Friday", "Saturday"],
-    ans: 3,
-    exp: "65 mod 7 = 2 (65 = 7*9 + 2). Adding 2 days to Tuesday gives Thursday (or if counting 65 days from Tuesday: 65 = 9 weeks + 2 days -> Tuesday + 2 days = Thursday). Wait: 65/7 = 9 remainder 2 => Tue+2 = Thursday.",
+    ans: 1,
+    exp: "65 mod 7 = 2 (since 65 = 7 * 9 + 2). Adding 2 days to Tuesday gives Thursday.",
   },
   {
     section: "Reasoning",
@@ -1390,9 +1390,9 @@ export const FRESH_PAPER1_QUESTIONS: Question[] = [
   {
     section: "Reasoning",
     q: "Which word cannot be formed from the letters of the word 'INFRASTRUCTURE'?",
-    opts: ["FRACTURE", "CURTAIN", "TRAIN", "STRUCTURE"],
+    opts: ["FRACTURE", "TRAINER", "CURTAIN", "STRUCTURE"],
     ans: 1,
-    exp: "INFRASTRUCTURE does not contain the letter 'N' (letters are I, N? Wait: I-N-F-R-A-S-T-R-U-C-T-U-R-E has N). But it has only one 'A'. 'CURTAIN' needs C, U, R, T, A, I, N — wait, what about FRACTURE? F-R-A-C-T-U-R-E (has all). 'CURTAIN': C,U,R,T,A,I,N (has all). Let's check 'NATION' or letters.",
+    exp: "'TRAINER' requires two 'E's and an 'I', but 'INFRASTRUCTURE' contains only one 'E'. Therefore, 'TRAINER' cannot be formed.",
   },
   {
     section: "Reasoning",

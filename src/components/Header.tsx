@@ -1,9 +1,10 @@
 import React from "react";
-import { BookOpen, BarChart3, Sparkles, Award, Layers } from "lucide-react";
+import { BookOpen, BarChart3, Sparkles, Layers, GraduationCap, Sun, Moon } from "lucide-react";
+import { useTheme } from "../context/ThemeContext";
 
 interface HeaderProps {
-  activeTab: "quiz" | "research" | "analytics";
-  setActiveTab: (tab: "quiz" | "research" | "analytics") => void;
+  activeTab: "quiz" | "research" | "analytics" | "resources";
+  setActiveTab: (tab: "quiz" | "research" | "analytics" | "resources") => void;
   onOpenGenerator: () => void;
 }
 
@@ -12,77 +13,110 @@ export const Header: React.FC<HeaderProps> = ({
   setActiveTab,
   onOpenGenerator,
 }) => {
+  const { theme, toggleTheme } = useTheme();
+
   return (
-    <header className="bg-slate-900 text-white border-b border-slate-800 shadow-md sticky top-0 z-40">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between h-16">
+    <header className="bg-slate-900 text-white border-b border-slate-800 shadow-xs sticky top-0 z-40">
+      <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8">
+        <div className="flex items-center justify-between h-16 gap-2 sm:gap-4">
           {/* Brand Logo & Title */}
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-lg bg-gradient-to-tr from-amber-600 to-amber-500 flex items-center justify-center font-bold text-slate-950 text-sm shadow-sm ring-2 ring-amber-400/30">
+          <div className="flex items-center gap-2.5 sm:gap-3 shrink-0">
+            <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-gradient-to-tr from-amber-500 to-amber-400 flex items-center justify-center font-black text-slate-950 text-xs sm:text-sm shadow-xs ring-1 ring-amber-300/40">
               CIL
             </div>
-            <div>
+            <div className="min-w-0">
               <div className="flex items-center gap-2">
-                <h1 className="text-base sm:text-lg font-bold tracking-tight text-slate-100">
-                  CIL MT (System) Exam Console
+                <h1 className="text-sm sm:text-base font-extrabold tracking-tight text-slate-100 truncate">
+                  CIL MT (System)
                 </h1>
-                <span className="hidden sm:inline-flex items-center px-2 py-0.5 rounded text-[11px] font-semibold bg-amber-500/20 text-amber-300 border border-amber-500/30">
-                  2025–2026 Recruitment
+                <span className="hidden md:inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-bold bg-amber-500/20 text-amber-300 border border-amber-500/30 whitespace-nowrap">
+                  2025–2026 CBT
                 </span>
               </div>
-              <p className="text-xs text-slate-400 hidden md:block">
-                Coal India Limited · Management Trainee CBT Prep & Live Research Engine
+              <p className="text-[11px] text-slate-400 hidden lg:block truncate">
+                Management Trainee Exam Simulation & Analytics Console
               </p>
             </div>
           </div>
 
           {/* Navigation Tabs */}
-          <div className="flex items-center gap-1 sm:gap-2">
+          <nav className="flex items-center gap-1 sm:gap-1.5 overflow-x-auto py-1 scrollbar-none">
             <button
               onClick={() => setActiveTab("quiz")}
-              className={`flex items-center gap-1.5 px-3 py-2 rounded-md text-xs sm:text-sm font-semibold transition-all ${
+              className={`flex items-center gap-1 sm:gap-1.5 px-2.5 sm:px-3 py-1.5 rounded-lg text-xs font-bold transition-all whitespace-nowrap cursor-pointer ${
                 activeTab === "quiz"
-                  ? "bg-amber-500 text-slate-950 shadow-sm"
+                  ? "bg-amber-500 text-slate-950 shadow-xs"
                   : "text-slate-300 hover:bg-slate-800 hover:text-white"
               }`}
             >
-              <Layers className="w-4 h-4" />
+              <Layers className="w-3.5 h-3.5" />
               <span>Mock Tests</span>
             </button>
 
             <button
-              onClick={() => setActiveTab("research")}
-              className={`flex items-center gap-1.5 px-3 py-2 rounded-md text-xs sm:text-sm font-semibold transition-all ${
-                activeTab === "research"
-                  ? "bg-amber-500 text-slate-950 shadow-sm"
+              onClick={() => setActiveTab("resources")}
+              className={`flex items-center gap-1 sm:gap-1.5 px-2.5 sm:px-3 py-1.5 rounded-lg text-xs font-bold transition-all whitespace-nowrap cursor-pointer ${
+                activeTab === "resources"
+                  ? "bg-amber-500 text-slate-950 shadow-xs"
                   : "text-slate-300 hover:bg-slate-800 hover:text-white"
               }`}
             >
-              <BookOpen className="w-4 h-4" />
-              <span>Research Hub</span>
+              <GraduationCap className="w-3.5 h-3.5" />
+              <span className="hidden sm:inline">Study Resources</span>
+              <span className="sm:hidden">Resources</span>
+            </button>
+
+            <button
+              onClick={() => setActiveTab("research")}
+              className={`flex items-center gap-1 sm:gap-1.5 px-2.5 sm:px-3 py-1.5 rounded-lg text-xs font-bold transition-all whitespace-nowrap cursor-pointer ${
+                activeTab === "research"
+                  ? "bg-amber-500 text-slate-950 shadow-xs"
+                  : "text-slate-300 hover:bg-slate-800 hover:text-white"
+              }`}
+            >
+              <BookOpen className="w-3.5 h-3.5" />
+              <span className="hidden sm:inline">Research Hub</span>
+              <span className="sm:hidden">Research</span>
             </button>
 
             <button
               onClick={() => setActiveTab("analytics")}
-              className={`flex items-center gap-1.5 px-3 py-2 rounded-md text-xs sm:text-sm font-semibold transition-all ${
+              className={`flex items-center gap-1 sm:gap-1.5 px-2.5 sm:px-3 py-1.5 rounded-lg text-xs font-bold transition-all whitespace-nowrap cursor-pointer ${
                 activeTab === "analytics"
-                  ? "bg-amber-500 text-slate-950 shadow-sm"
+                  ? "bg-amber-500 text-slate-950 shadow-xs"
                   : "text-slate-300 hover:bg-slate-800 hover:text-white"
               }`}
             >
-              <BarChart3 className="w-4 h-4" />
-              <span>Analytics & Sync</span>
+              <BarChart3 className="w-3.5 h-3.5" />
+              <span className="hidden sm:inline">Analytics & Heatmap</span>
+              <span className="sm:hidden">Analytics</span>
             </button>
+          </nav>
 
+          {/* Right Action Icons: AI Generator & Theme Toggle */}
+          <div className="flex items-center gap-1.5 sm:gap-2 shrink-0">
             {/* AI Real-Time Generator Action Button */}
             <button
               onClick={onOpenGenerator}
-              className="flex items-center gap-1.5 px-3 py-2 rounded-md text-xs sm:text-sm font-semibold bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white shadow-sm border border-emerald-400/30 transition-all ml-1 sm:ml-2"
+              className="flex items-center gap-1.5 px-2.5 sm:px-3 py-1.5 rounded-lg text-xs font-bold bg-emerald-600 hover:bg-emerald-500 text-white shadow-xs border border-emerald-400/30 transition-all cursor-pointer whitespace-nowrap"
               title="Generate fresh real-time questions using AI Search Grounding"
             >
-              <Sparkles className="w-4 h-4 text-emerald-200" />
-              <span className="hidden sm:inline">AI Live Generator</span>
-              <span className="sm:hidden">Live AI</span>
+              <Sparkles className="w-3.5 h-3.5 text-emerald-200" />
+              <span className="hidden md:inline">Live AI Gen</span>
+            </button>
+
+            {/* Global Theme Toggle Button */}
+            <button
+              onClick={toggleTheme}
+              className="p-2 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 transition-all cursor-pointer flex items-center justify-center"
+              title={`Switch to ${theme === "dark" ? "Light" : "Dark"} Mode`}
+              aria-label="Toggle Theme"
+            >
+              {theme === "dark" ? (
+                <Sun className="w-4 h-4 text-amber-400" />
+              ) : (
+                <Moon className="w-4 h-4 text-slate-300" />
+              )}
             </button>
           </div>
         </div>
@@ -90,3 +124,4 @@ export const Header: React.FC<HeaderProps> = ({
     </header>
   );
 };
+

@@ -106,8 +106,8 @@ export const SetSelector: React.FC<SetSelectorProps> = ({
       <div className="space-y-4">
         <div className="flex items-center justify-between">
           <div>
-            <h3 className="text-lg font-bold text-slate-900">Standard Test Series (5 Sets + Research Set)</h3>
-            <p className="text-xs text-slate-500">
+            <h3 className="text-lg font-bold text-slate-900 dark:text-slate-100">Standard Test Series (5 Sets + Research Set)</h3>
+            <p className="text-xs text-slate-500 dark:text-slate-400">
               Each set simulates official CIL CBT conditions with 100 MCQs per paper (90 minutes).
             </p>
           </div>
@@ -115,34 +115,34 @@ export const SetSelector: React.FC<SetSelectorProps> = ({
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
           {/* Fresh Research Set 7 Card */}
-          <div className="bg-white border-2 border-amber-400/80 rounded-xl p-5 shadow-sm space-y-4 hover:shadow-md transition-all relative">
+          <div className="bg-white dark:bg-slate-900 border-2 border-amber-400/80 dark:border-amber-500/60 rounded-2xl p-5 shadow-xs space-y-4 hover:shadow-md transition-all relative">
             <div className="absolute top-3 right-3">
-              <span className="px-2 py-0.5 rounded text-[10px] font-bold uppercase bg-amber-100 text-amber-900 border border-amber-300">
+              <span className="px-2 py-0.5 rounded text-[10px] font-bold uppercase bg-amber-100 dark:bg-amber-950/80 text-amber-900 dark:text-amber-300 border border-amber-300 dark:border-amber-700">
                 Fresh 2025–2026 Set
               </span>
             </div>
 
             <div className="flex items-center gap-2.5">
-              <div className="w-9 h-9 rounded-lg bg-amber-500 text-slate-950 font-bold flex items-center justify-center text-sm">
+              <div className="w-9 h-9 rounded-xl bg-amber-500 text-slate-950 font-bold flex items-center justify-center text-sm shadow-xs">
                 S7
               </div>
               <div>
-                <h4 className="font-bold text-slate-900 text-sm">Set 7: 2025–2026 Research Mock</h4>
-                <p className="text-[11px] text-slate-500">100 Full-Length Original MCQs</p>
+                <h4 className="font-bold text-slate-900 dark:text-slate-100 text-sm">Set 7: 2025–2026 Research Mock</h4>
+                <p className="text-[11px] text-slate-500 dark:text-slate-400">100 Full-Length Original MCQs</p>
               </div>
             </div>
 
-            <p className="text-xs text-slate-600 leading-relaxed">
+            <p className="text-xs text-slate-600 dark:text-slate-300 leading-relaxed">
               Synthesized from latest Coal India notifications, National Coal Gasification Mission, Polity, Quantitative, Reasoning, and English standards.
             </p>
 
-            <div className="pt-2 border-t border-slate-100 flex items-center justify-between">
-              <span className="text-xs font-semibold text-slate-500 flex items-center gap-1">
+            <div className="pt-2 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between">
+              <span className="text-xs font-semibold text-slate-500 dark:text-slate-400 flex items-center gap-1">
                 <Clock className="w-3.5 h-3.5" /> 90 Mins · 100 Qs
               </span>
               <button
                 onClick={startFreshResearchSet}
-                className="px-3.5 py-1.5 bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold text-xs rounded-lg flex items-center gap-1 transition-all"
+                className="px-3.5 py-1.5 bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold text-xs rounded-lg flex items-center gap-1 transition-all cursor-pointer"
               >
                 <span>Start Paper I</span>
                 <ArrowRight className="w-3.5 h-3.5" />
@@ -154,44 +154,44 @@ export const SetSelector: React.FC<SetSelectorProps> = ({
           {[1, 2, 3, 4, 5, 6].map((num) => (
             <div
               key={num}
-              className="bg-white border border-slate-200 rounded-xl p-5 shadow-sm space-y-4 hover:border-slate-300 hover:shadow-md transition-all"
+              className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-5 shadow-xs space-y-4 hover:border-slate-300 dark:hover:border-slate-700 hover:shadow-md transition-all"
             >
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2.5">
-                  <div className="w-9 h-9 rounded-lg bg-slate-900 text-white font-bold flex items-center justify-center text-sm">
+                  <div className="w-9 h-9 rounded-xl bg-slate-900 dark:bg-slate-800 text-white font-bold flex items-center justify-center text-sm">
                     S{num}
                   </div>
                   <div>
-                    <h4 className="font-bold text-slate-900 text-sm">Mock Test Set {num}</h4>
-                    <p className="text-[11px] text-slate-500">Official Standard CBT Simulation</p>
+                    <h4 className="font-bold text-slate-900 dark:text-slate-100 text-sm">Mock Test Set {num}</h4>
+                    <p className="text-[11px] text-slate-500 dark:text-slate-400">Official Standard CBT Simulation</p>
                   </div>
                 </div>
-                <span className="text-[10px] font-semibold text-slate-600 px-2 py-0.5 bg-slate-100 rounded">
+                <span className="text-[10px] font-semibold text-slate-600 dark:text-slate-400 px-2 py-0.5 bg-slate-100 dark:bg-slate-800 rounded">
                   200 Marks Total
                 </span>
               </div>
 
               <div className="grid grid-cols-2 gap-2 text-xs">
-                <div className="p-2.5 bg-slate-50 border border-slate-200 rounded-lg">
-                  <div className="font-bold text-slate-900 text-xs">Paper I</div>
-                  <div className="text-[11px] text-slate-500 mt-0.5">General Aptitude (100 Qs)</div>
+                <div className="p-2.5 bg-slate-50 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 rounded-xl">
+                  <div className="font-bold text-slate-900 dark:text-slate-100 text-xs">Paper I</div>
+                  <div className="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5">General Aptitude (100 Qs)</div>
                 </div>
-                <div className="p-2.5 bg-slate-50 border border-slate-200 rounded-lg">
-                  <div className="font-bold text-slate-900 text-xs">Paper II</div>
-                  <div className="text-[11px] text-slate-500 mt-0.5">Computer Science (100 Qs)</div>
+                <div className="p-2.5 bg-slate-50 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 rounded-xl">
+                  <div className="font-bold text-slate-900 dark:text-slate-100 text-xs">Paper II</div>
+                  <div className="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5">Computer Science (100 Qs)</div>
                 </div>
               </div>
 
-              <div className="pt-2 border-t border-slate-100 flex items-center justify-between gap-2">
+              <div className="pt-2 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between gap-2">
                 <button
                   onClick={() => startSet(num, "p1")}
-                  className="flex-1 py-1.5 bg-slate-100 hover:bg-amber-100 hover:text-amber-900 text-slate-800 font-bold text-xs rounded-lg transition-all text-center"
+                  className="flex-1 py-1.5 bg-slate-100 dark:bg-slate-800 hover:bg-amber-100 dark:hover:bg-amber-950/60 hover:text-amber-900 dark:hover:text-amber-300 text-slate-800 dark:text-slate-200 font-bold text-xs rounded-lg transition-all text-center cursor-pointer"
                 >
                   Paper I (Aptitude)
                 </button>
                 <button
                   onClick={() => startSet(num, "p2")}
-                  className="flex-1 py-1.5 bg-slate-100 hover:bg-indigo-100 hover:text-indigo-900 text-slate-800 font-bold text-xs rounded-lg transition-all text-center"
+                  className="flex-1 py-1.5 bg-slate-100 dark:bg-slate-800 hover:bg-indigo-100 dark:hover:bg-indigo-950/60 hover:text-indigo-900 dark:hover:text-indigo-300 text-slate-800 dark:text-slate-200 font-bold text-xs rounded-lg transition-all text-center cursor-pointer"
                 >
                   Paper II (CS / IT)
                 </button>

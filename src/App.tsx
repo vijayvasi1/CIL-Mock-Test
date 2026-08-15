@@ -3,16 +3,18 @@ import { Header } from "./components/Header";
 import { SetSelector } from "./components/SetSelector";
 import { ResearchHub } from "./components/ResearchHub";
 import { AnalyticsView } from "./components/AnalyticsView";
+import { StudyResources } from "./components/StudyResources";
 import { QuizConsole } from "./components/QuizConsole";
 import { ResultSummary } from "./components/ResultSummary";
 import { LiveGeneratorModal } from "./components/LiveGeneratorModal";
+import { ThemeProvider } from "./context/ThemeContext";
 import { Question } from "./types";
 import { FRESH_PAPER1_QUESTIONS } from "./data/researchData";
 import { loadSavedDynamicSets } from "./data/allSetsData";
 import { initAllQuizData } from "./data/rawQuizData";
 
 export default function App() {
-  const [activeTab, setActiveTab] = useState<"quiz" | "research" | "analytics">("quiz");
+  const [activeTab, setActiveTab] = useState<"quiz" | "research" | "analytics" | "resources">("quiz");
   const [activeQuiz, setActiveQuiz] = useState<{
     questions: Question[];
     title: string;
@@ -87,79 +89,84 @@ export default function App() {
   };
 
   return (
-    <div className="min-h-screen bg-slate-100 text-slate-900 flex flex-col font-sans selection:bg-amber-500 selection:text-slate-950">
-      {/* Global Header */}
-      <Header
-        activeTab={activeTab}
-        setActiveTab={(tab) => {
-          setActiveTab(tab);
-          if (tab !== "quiz") {
-            setActiveQuiz(null);
-            setTestResult(null);
-          }
-        }}
-        onOpenGenerator={() => setIsGeneratorOpen(true)}
-      />
-
-      {/* Main Content Body */}
-      <main className="flex-1 pb-16">
-        {/* Active Quiz Running */}
-        {activeQuiz ? (
-          <QuizConsole
-            questions={activeQuiz.questions}
-            title={activeQuiz.title}
-            setNumber={activeQuiz.setNumber}
-            paperName={activeQuiz.paperName}
-            onFinishTest={handleFinishTest}
-            onBackToHome={handleBackToHome}
-          />
-        ) : testResult ? (
-          <ResultSummary
-            summary={testResult.summary}
-            title={testResult.title}
-            setNumber={testResult.setNumber}
-            paperName={testResult.paperName}
-            onRetake={handleRetake}
-            onBackToHome={handleBackToHome}
-            onOpenAnalytics={() => {
+    <ThemeProvider>
+      <div className="min-h-screen bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 flex flex-col font-sans transition-colors duration-200 selection:bg-amber-500 selection:text-slate-950">
+        {/* Global Header */}
+        <Header
+          activeTab={activeTab}
+          setActiveTab={(tab) => {
+            setActiveTab(tab);
+            if (tab !== "quiz") {
+              setActiveQuiz(null);
               setTestResult(null);
-              setActiveTab("analytics");
-            }}
-          />
-        ) : (
-          <>
-            {activeTab === "quiz" && (
-              <SetSelector
-                onStartQuiz={handleStartQuiz}
-                onOpenGenerator={() => setIsGeneratorOpen(true)}
-                onOpenResearch={() => setActiveTab("research")}
-              />
-            )}
+            }
+          }}
+          onOpenGenerator={() => setIsGeneratorOpen(true)}
+        />
 
-            {activeTab === "research" && (
-              <ResearchHub
-                onStartFreshPaper1={(questions) =>
-                  handleStartQuiz(
-                    questions,
-                    "CIL MT (System) 2025–2026 Research Mock Test — Paper I",
-                    "Set 7 (Research)",
-                    "Paper I (General Aptitude - 100 Marks)"
-                  )
-                }
-              />
-            )}
+        {/* Main Content Body */}
+        <main className="flex-1 pb-16">
+          {/* Active Quiz Running */}
+          {activeQuiz ? (
+            <QuizConsole
+              questions={activeQuiz.questions}
+              title={activeQuiz.title}
+              setNumber={activeQuiz.setNumber}
+              paperName={activeQuiz.paperName}
+              onFinishTest={handleFinishTest}
+              onBackToHome={handleBackToHome}
+            />
+          ) : testResult ? (
+            <ResultSummary
+              summary={testResult.summary}
+              title={testResult.title}
+              setNumber={testResult.setNumber}
+              paperName={testResult.paperName}
+              questions={testResult.questions}
+              onRetake={handleRetake}
+              onBackToHome={handleBackToHome}
+              onOpenAnalytics={() => {
+                setTestResult(null);
+                setActiveTab("analytics");
+              }}
+            />
+          ) : (
+            <>
+              {activeTab === "quiz" && (
+                <SetSelector
+                  onStartQuiz={handleStartQuiz}
+                  onOpenGenerator={() => setIsGeneratorOpen(true)}
+                  onOpenResearch={() => setActiveTab("research")}
+                />
+              )}
 
-            {activeTab === "analytics" && <AnalyticsView />}
-          </>
-        )}
-      </main>
+              {activeTab === "research" && (
+                <ResearchHub
+                  onStartFreshPaper1={(questions) =>
+                    handleStartQuiz(
+                      questions,
+                      "CIL MT (System) 2025–2026 Research Mock Test — Paper I",
+                      "Set 7 (Research)",
+                      "Paper I (General Aptitude - 100 Marks)"
+                    )
+                  }
+                />
+              )}
 
-      {/* Live AI Generator Modal */}
-      <LiveGeneratorModal
-        isOpen={isGeneratorOpen}
-        onClose={() => setIsGeneratorOpen(false)}
-        onQuestionsGenerated={handleQuestionsGenerated}
-      />
-    </div>
+              {activeTab === "analytics" && <AnalyticsView />}
+
+              {activeTab === "resources" && <StudyResources />}
+            </>
+          )}
+        </main>
+
+        {/* Live AI Generator Modal */}
+        <LiveGeneratorModal
+          isOpen={isGeneratorOpen}
+          onClose={() => setIsGeneratorOpen(false)}
+          onQuestionsGenerated={handleQuestionsGenerated}
+        />
+      </div>
+    </ThemeProvider>
   );
 }
