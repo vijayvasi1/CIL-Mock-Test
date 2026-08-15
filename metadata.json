@@ -1,0 +1,6 @@
+{
+  "name": "CIL MT System Prep & Mock Test Console",
+  "description": "Comprehensive preparation and live mock test console for Coal India Limited (CIL) Management Trainee (System) CBT with real-time research, interactive instant feedback, in-depth explanations, and progress analytics.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
