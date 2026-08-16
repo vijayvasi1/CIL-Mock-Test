@@ -5,7 +5,7 @@ import {defineConfig} from 'vite';
 
 export default defineConfig(() => {
   return {
-    base: process.env.GITHUB_ACTIONS ? '/CIL-Mock-Test/' : './',
+    base: process.env.GITHUB_ACTIONS ? '/CIL-Mock-Test/' : '/',
     plugins: [react(), tailwindcss()],
     resolve: {
       alias: {
