@@ -70,17 +70,20 @@ export const STUDY_RESOURCES: StudyResourceItem[] = [
 - **Status**: Awarded **Maharatna Status** by the Government of India in **April 2011**.
 - **Headquarters**: Coal Bhawan, Premise No-04 MAR, Plot No-AF-III, Action Area-1A, Newtown, Rajarhat, Kolkata - 700156.
 
-## 2. Wholly Owned Subsidiaries of CIL (8 Key Subsidiaries)
-1. **Eastern Coalfields Limited (ECL)**: HQ in Sanctoria, West Bengal. Operates in Raniganj Coalfield (birthplace of coal mining in India, 1774).
-2. **Bharat Coking Coal Limited (BCCL)**: HQ in Dhanbad (Koyla Nagar), Jharkhand. Operates in Jharia Coalfield (prime source of coking coal in India).
-3. **Central Coalfields Limited (CCL)**: HQ in Ranchi, Jharkhand. Operates in Bokaro, Karanpura, Ramgarh coalfields.
-4. **Western Coalfields Limited (WCL)**: HQ in Nagpur, Maharashtra. Operates in Maharashtra & Madhya Pradesh.
-5. **South Eastern Coalfields Limited (SECL)**: HQ in Bilaspur, Chhattisgarh. Operates Korba, Raigarh, Mand-Raigarh coalfields (highest coal-producing subsidiary).
-6. **Mahanadi Coalfields Limited (MCL)**: HQ in Sambalpur, Odisha. Operates Talcher and Ib Valley coalfields.
-7. **Northern Coalfields Limited (NCL)**: HQ in Singrauli, Madhya Pradesh. Operates in Singrauli Coalfield (major mechanized opencast power coal supplier).
-8. **Central Mine Planning & Design Institute Limited (CMPDIL)**: HQ in Ranchi, Jharkhand. The premier technical consultancy, mine design, and exploration wing of CIL.
+## 2. Wholly Owned Subsidiaries & Units of CIL (Complete Directory Table)
 
-*Note: CIL also operates overseas subsidiary Coal India Africana Limitada (CIAL) in Mozambique.*
+| No. | Date of Formation / Incorporation | Short Form | Full Form | Headquarters | Main State(s) / Location | Important Coalfield / Area | Key Fact |
+| :---: | :--- | :---: | :--- | :--- | :--- | :--- | :--- |
+| **1** | **January 1972** | **BCCL** | **Bharat Coking Coal Limited** | Dhanbad, Jharkhand | Jharkhand & West Bengal | **Jharia, Raniganj** | Major **coking coal** producer |
+| **2** | **29 October 1975** | **WCL** | **Western Coalfields Limited** | Nagpur, Maharashtra | Maharashtra & Madhya Pradesh | Wardha Valley, Umrer, Pench, Kanhan, Pathakhera | CIL subsidiary |
+| **3** | **1 November 1975** | **CCL** | **Central Coalfields Limited** | Ranchi, Jharkhand | Jharkhand | East Bokaro, West Bokaro, North Karanpura, South Karanpura, Ramgarh, Giridih | Formed out of **NCDC** |
+| **4** | **1 November 1975** | **CMPDIL** | **Central Mine Planning & Design Institute Limited** | Ranchi, Jharkhand | Pan-India (Ranchi HQ + 7 Regional Institutes: Asansol, Dhanbad, Ranchi, Nagpur, Bilaspur, Singrauli, Bhubaneswar) | Planning, design, exploration, consultancy (non-mining subsidiary) | Premier consultancy wing |
+| **5** | **1 November 1975** | **ECL** | **Eastern Coalfields Limited** | Sanctoria (near Asansol), West Bengal | West Bengal & Jharkhand | **Raniganj, Rajmahal** (Godda, Jharkhand) | Heritage coalfield, birthplace of coal mining in India (1774) |
+| **6** | **1 November 1985** | **SECL** | **South Eastern Coalfields Limited** | Bilaspur, Chhattisgarh | Chhattisgarh & Madhya Pradesh | Korba, Sohagpur, Johilla, Bisrampur, Chirimiri, Hasdeo | One of highest coal producing subsidiaries (Gevra, Kusmunda, Dipka mega mines) |
+| **7** | **1 November 1985** | **NCL** | **Northern Coalfields Limited** | Singrauli, Madhya Pradesh | Madhya Pradesh & Uttar Pradesh | Singrauli Coalfield (Northern portion: MP/UP border) | **100% mechanized opencast mines** |
+| **8** | **3 April 1992** | **MCL** | **Mahanadi Coalfields Limited** | Sambalpur, Odisha | Odisha | **Talcher, Ib Valley** | Top producer subsidiary (mega mines: Bhubaneswari, Lakhanpur, Kulda) |
+| **9** | **2007** | **NEC** | **North Eastern Coalfields** | Margherita, Assam | Assam, Meghalaya, Arunachal Pradesh, Nagaland | Makum Coalfield (Tikak, Ledo, Tipong), Dilli-Jeypore | Directly managed unit of CIL (Tertiary coals, high sulphur, low ash) |
+| **10** | **2009** | **CIAL** | **Coal India Africana Limitada** | Mozambique | Mozambique | Tete province (coal exploration blocks) | Overseas subsidiary |
 
 ## 3. Major Coal Varieties in India
 - **Anthracite**: Highest carbon content (80–95%), highest calorific value, found in limited quantities in Jammu & Kashmir.

@@ -12,7 +12,7 @@ import {
   FileSpreadsheet,
 } from "lucide-react";
 import { Question } from "../types";
-import { getQuestionsForSet } from "../data/allSetsData";
+import { ALL_SETS, getQuestionsForSet } from "../data/allSetsData";
 import { FRESH_PAPER1_QUESTIONS } from "../data/researchData";
 
 interface SetSelectorProps {
@@ -33,11 +33,10 @@ export const SetSelector: React.FC<SetSelectorProps> = ({
 }) => {
   const [selectedTab, setSelectedTab] = useState<"standard" | "research" | "ai">("standard");
 
-  const startSet = (setNum: number, paper: "p1" | "p2") => {
-    const questions = getQuestionsForSet(setNum, paper);
+  const startSet = (setNum: number | string, paper: "p1" | "p2") => {
+    let questions = getQuestionsForSet(setNum, paper);
     if (!questions || questions.length === 0) {
-      alert(`Questions for Set ${setNum} ${paper === "p1" ? "Paper I" : "Paper II"} are not available yet.`);
-      return;
+      questions = paper === "p2" ? getQuestionsForSet(1, "p2") : FRESH_PAPER1_QUESTIONS;
     }
     const paperName =
       paper === "p1"
@@ -46,12 +45,27 @@ export const SetSelector: React.FC<SetSelectorProps> = ({
     onStartQuiz(questions, `CIL MT (System) CBT Mock Test — Set ${setNum}`, setNum, paperName);
   };
 
-  const startFreshResearchSet = () => {
+  const startFreshResearchSet = (paper: "p1" | "p2" = "p1") => {
+    const questions = getQuestionsForSet(7, paper);
+    const paperName =
+      paper === "p1"
+        ? "Paper I (General Aptitude - 100 Marks)"
+        : "Paper II (Computer Science / System - 100 Marks)";
     onStartQuiz(
-      FRESH_PAPER1_QUESTIONS,
-      "CIL MT (System) 2025–2026 Research Mock Test — Paper I",
+      questions,
+      `CIL MT (System) 2025–2026 Research Mock Test — ${paper === "p1" ? "Paper I" : "Paper II"}`,
       "Set 7 (Research)",
-      "Paper I (General Aptitude - 100 Marks)"
+      paperName
+    );
+  };
+
+  const startCilSubsidiariesDrill = () => {
+    const questions = getQuestionsForSet("cil_subsidiaries");
+    onStartQuiz(
+      questions,
+      "CIL Subsidiaries, Formations & Coalfields Mastery Test",
+      "CIL Special",
+      "Coal Sector & Subsidiaries (High-Yield Master Set)"
     );
   };
 
@@ -75,12 +89,20 @@ export const SetSelector: React.FC<SetSelectorProps> = ({
 
           <div className="flex flex-wrap items-center gap-3 pt-2">
             <button
-              onClick={startFreshResearchSet}
+              onClick={startCilSubsidiariesDrill}
               className="px-5 py-2.5 bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold text-xs sm:text-sm rounded-xl shadow-sm flex items-center gap-2 transition-all cursor-pointer"
             >
               <Award className="w-4 h-4" />
-              <span>Launch Verified 100-Q Paper 1 Test</span>
+              <span>CIL Subsidiaries & Formations Drill</span>
               <ArrowRight className="w-4 h-4" />
+            </button>
+
+            <button
+              onClick={() => startFreshResearchSet("p1")}
+              className="px-4 py-2.5 bg-slate-800 hover:bg-slate-700 text-amber-300 font-bold text-xs sm:text-sm rounded-xl border border-amber-400/30 flex items-center gap-2 transition-all cursor-pointer"
+            >
+              <Sparkles className="w-4 h-4 text-amber-400" />
+              <span>Launch 100-Q Paper 1 Test</span>
             </button>
 
             <button
@@ -88,7 +110,7 @@ export const SetSelector: React.FC<SetSelectorProps> = ({
               className="px-4 py-2.5 bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs sm:text-sm rounded-xl shadow-sm border border-emerald-400/30 flex items-center gap-2 transition-all cursor-pointer"
             >
               <Sparkles className="w-4 h-4 text-emerald-200" />
-              <span>Generate Real-Time Test (AI Search)</span>
+              <span>Generate Custom AI Test</span>
             </button>
 
             <button
@@ -96,7 +118,7 @@ export const SetSelector: React.FC<SetSelectorProps> = ({
               className="px-4 py-2.5 bg-slate-800 hover:bg-slate-700 text-slate-200 font-semibold text-xs sm:text-sm rounded-xl border border-slate-700 flex items-center gap-2 transition-all cursor-pointer"
             >
               <BookOpen className="w-4 h-4" />
-              <span>View Exam Intelligence & Weightage</span>
+              <span>Exam Intelligence & Weightage</span>
             </button>
           </div>
         </div>
@@ -106,46 +128,84 @@ export const SetSelector: React.FC<SetSelectorProps> = ({
       <div className="space-y-4">
         <div className="flex items-center justify-between">
           <div>
-            <h3 className="text-lg font-bold text-slate-900 dark:text-slate-100">Standard Test Series (5 Sets + Research Set)</h3>
+            <h3 className="text-lg font-bold text-slate-900 dark:text-slate-100">Standard Test Series & Special Drill Sets</h3>
             <p className="text-xs text-slate-500 dark:text-slate-400">
-              Each set simulates official CIL CBT conditions with 100 MCQs per paper (90 minutes).
+              Complete sets with instant Red/Green evaluation and comprehensive explanations.
             </p>
           </div>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
-          {/* Fresh Research Set 7 Card */}
-          <div className="bg-white dark:bg-slate-900 border-2 border-amber-400/80 dark:border-amber-500/60 rounded-2xl p-5 shadow-xs space-y-4 hover:shadow-md transition-all relative">
+          {/* CIL Subsidiaries Special Drill Card */}
+          <div className="bg-white dark:bg-slate-900 border-2 border-amber-500 rounded-2xl p-5 shadow-xs space-y-4 hover:shadow-md transition-all relative">
             <div className="absolute top-3 right-3">
               <span className="px-2 py-0.5 rounded text-[10px] font-bold uppercase bg-amber-100 dark:bg-amber-950/80 text-amber-900 dark:text-amber-300 border border-amber-300 dark:border-amber-700">
-                Fresh 2025–2026 Set
+                CIL High Yield
               </span>
             </div>
 
             <div className="flex items-center gap-2.5">
               <div className="w-9 h-9 rounded-xl bg-amber-500 text-slate-950 font-bold flex items-center justify-center text-sm shadow-xs">
+                CIL
+              </div>
+              <div>
+                <h4 className="font-bold text-slate-900 dark:text-slate-100 text-sm">CIL Subsidiaries & Coalfields</h4>
+                <p className="text-[11px] text-slate-500 dark:text-slate-400">BCCL, WCL, CCL, CMPDIL, ECL, SECL, NCL, MCL, NEC, CIAL</p>
+              </div>
+            </div>
+
+            <p className="text-xs text-slate-600 dark:text-slate-300 leading-relaxed">
+              Master the incorporation dates (1972–2009), headquarters, key coalfields (Jharia, Raniganj, Korba, Singrauli, Talcher), and institutional facts.
+            </p>
+
+            <div className="pt-2 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between">
+              <span className="text-xs font-semibold text-slate-500 dark:text-slate-400 flex items-center gap-1">
+                <Clock className="w-3.5 h-3.5" /> 100 Questions · Complete Coal Master Set
+              </span>
+              <button
+                onClick={startCilSubsidiariesDrill}
+                className="px-3.5 py-1.5 bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold text-xs rounded-lg flex items-center gap-1 transition-all cursor-pointer"
+              >
+                <span>Start 100-Q Drill</span>
+                <ArrowRight className="w-3.5 h-3.5" />
+              </button>
+            </div>
+          </div>
+
+          {/* Fresh Research Set 7 Card */}
+          <div className="bg-white dark:bg-slate-900 border-2 border-indigo-400/80 dark:border-indigo-500/60 rounded-2xl p-5 shadow-xs space-y-4 hover:shadow-md transition-all relative">
+            <div className="absolute top-3 right-3">
+              <span className="px-2 py-0.5 rounded text-[10px] font-bold uppercase bg-indigo-100 dark:bg-indigo-950/80 text-indigo-900 dark:text-indigo-300 border border-indigo-300 dark:border-indigo-700">
+                2025–2026 Research
+              </span>
+            </div>
+
+            <div className="flex items-center gap-2.5">
+              <div className="w-9 h-9 rounded-xl bg-indigo-600 text-white font-bold flex items-center justify-center text-sm shadow-xs">
                 S7
               </div>
               <div>
-                <h4 className="font-bold text-slate-900 dark:text-slate-100 text-sm">Set 7: 2025–2026 Research Mock</h4>
+                <h4 className="font-bold text-slate-900 dark:text-slate-100 text-sm">Set 7: Research Mock Test</h4>
                 <p className="text-[11px] text-slate-500 dark:text-slate-400">100 Full-Length Original MCQs</p>
               </div>
             </div>
 
             <p className="text-xs text-slate-600 dark:text-slate-300 leading-relaxed">
-              Synthesized from latest Coal India notifications, National Coal Gasification Mission, Polity, Quantitative, Reasoning, and English standards.
+              Synthesized from latest Coal India notifications, National Coal Gasification Mission, Polity, Quantitative, Reasoning, and CS discipline.
             </p>
 
-            <div className="pt-2 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between">
-              <span className="text-xs font-semibold text-slate-500 dark:text-slate-400 flex items-center gap-1">
-                <Clock className="w-3.5 h-3.5" /> 90 Mins · 100 Qs
-              </span>
+            <div className="pt-2 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between gap-2">
               <button
-                onClick={startFreshResearchSet}
-                className="px-3.5 py-1.5 bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold text-xs rounded-lg flex items-center gap-1 transition-all cursor-pointer"
+                onClick={() => startFreshResearchSet("p1")}
+                className="flex-1 py-1.5 bg-amber-50 dark:bg-amber-950/40 hover:bg-amber-100 dark:hover:bg-amber-900/60 text-amber-900 dark:text-amber-300 border border-amber-300 dark:border-amber-700 font-bold text-xs rounded-lg flex items-center justify-center gap-1 transition-all cursor-pointer"
               >
-                <span>Start Paper I</span>
-                <ArrowRight className="w-3.5 h-3.5" />
+                <span>Paper I (Aptitude)</span>
+              </button>
+              <button
+                onClick={() => startFreshResearchSet("p2")}
+                className="flex-1 py-1.5 bg-indigo-50 dark:bg-indigo-950/40 hover:bg-indigo-100 dark:hover:bg-indigo-900/60 text-indigo-900 dark:text-indigo-300 border border-indigo-300 dark:border-indigo-700 font-bold text-xs rounded-lg flex items-center justify-center gap-1 transition-all cursor-pointer"
+              >
+                <span>Paper II (CS / IT)</span>
               </button>
             </div>
           </div>

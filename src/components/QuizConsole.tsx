@@ -44,10 +44,12 @@ interface QuizConsoleProps {
     timeSpentSeconds?: number;
   }) => void;
   onBackToHome: () => void;
+  onInactivityLogout?: () => void;
 }
 
 const LETTERS = ["A", "B", "C", "D"];
 const TAB_SWITCH_MAX_SECONDS = 10; // Strict 10-second tab switch limit
+const INACTIVITY_TIMEOUT_MS = 10 * 60 * 1000; // 10 minutes inactivity limit
 
 export const QuizConsole: React.FC<QuizConsoleProps> = ({
   questions: rawQuestions,
@@ -56,6 +58,7 @@ export const QuizConsole: React.FC<QuizConsoleProps> = ({
   paperName,
   onFinishTest,
   onBackToHome,
+  onInactivityLogout,
 }) => {
   // Ensure questions have difficulty tags and normalized structure
   const questions = normalizeQuestions(rawQuestions);
@@ -337,6 +340,48 @@ export const QuizConsole: React.FC<QuizConsoleProps> = ({
       }
     };
   }, [tabSwitchViolationOccurred]);
+
+  // 10-Minute User Inactivity Auto-Submit & Auto-Logout Proctoring
+  useEffect(() => {
+    let lastActivityTime = Date.now();
+
+    const handleUserActivity = () => {
+      lastActivityTime = Date.now();
+    };
+
+    const activityEvents = ["mousemove", "mousedown", "keydown", "touchstart", "scroll", "click"];
+    activityEvents.forEach((evt) => {
+      window.addEventListener(evt, handleUserActivity, { passive: true });
+    });
+
+    const inactivityInterval = setInterval(() => {
+      const idleTime = Date.now() - lastActivityTime;
+      if (idleTime >= INACTIVITY_TIMEOUT_MS) {
+        clearInterval(inactivityInterval);
+        try {
+          sessionStorage.setItem(
+            "cil_inactivity_logout_notice",
+            "You were automatically logged out and your test was submitted due to 10 minutes of inactivity."
+          );
+        } catch {}
+        // Auto submit the test first
+        handleSubmitRef.current(true, false);
+        // If onInactivityLogout is provided, trigger logout
+        if (onInactivityLogout) {
+          setTimeout(() => {
+            onInactivityLogout();
+          }, 300);
+        }
+      }
+    }, 2000);
+
+    return () => {
+      activityEvents.forEach((evt) => {
+        window.removeEventListener(evt, handleUserActivity);
+      });
+      clearInterval(inactivityInterval);
+    };
+  }, [onInactivityLogout]);
 
   // Toggle Marked for Review
   const toggleMarkForReview = (index: number) => {

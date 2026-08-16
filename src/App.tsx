@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { Header } from "./components/Header";
 import { SetSelector } from "./components/SetSelector";
 import { ResearchHub } from "./components/ResearchHub";
@@ -11,10 +11,11 @@ import { LoginPage } from "./components/LoginPage";
 import { ThemeProvider } from "./context/ThemeContext";
 import { Question } from "./types";
 import { FRESH_PAPER1_QUESTIONS } from "./data/researchData";
-import { loadSavedDynamicSets } from "./data/allSetsData";
+import { loadSavedDynamicSets, getQuestionsForSet } from "./data/allSetsData";
 import { initAllQuizData } from "./data/rawQuizData";
 
 const AUTH_USER_KEY = "cil_logged_in_user";
+const GLOBAL_INACTIVITY_LIMIT_MS = 10 * 60 * 1000; // 10 minutes
 
 export default function App() {
   const [currentUser, setCurrentUser] = useState<string | null>(() => {
@@ -52,6 +53,7 @@ export default function App() {
     setCurrentUser(user);
     try {
       localStorage.setItem(AUTH_USER_KEY, user);
+      sessionStorage.removeItem("cil_inactivity_logout_notice");
     } catch {
       // ignore
     }
@@ -67,6 +69,42 @@ export default function App() {
       // ignore
     }
   };
+
+  // Global Inactivity Monitor for the whole application
+  useEffect(() => {
+    if (!currentUser) return;
+
+    let lastActivityTime = Date.now();
+    const handleUserActivity = () => {
+      lastActivityTime = Date.now();
+    };
+
+    const activityEvents = ["mousemove", "mousedown", "keydown", "touchstart", "scroll", "click"];
+    activityEvents.forEach((evt) => {
+      window.addEventListener(evt, handleUserActivity, { passive: true });
+    });
+
+    const inactivityChecker = setInterval(() => {
+      const idleTime = Date.now() - lastActivityTime;
+      if (idleTime >= GLOBAL_INACTIVITY_LIMIT_MS) {
+        clearInterval(inactivityChecker);
+        try {
+          sessionStorage.setItem(
+            "cil_inactivity_logout_notice",
+            "You were automatically logged out and active sessions were saved due to 10 minutes of inactivity."
+          );
+        } catch {}
+        handleLogout();
+      }
+    }, 3000);
+
+    return () => {
+      activityEvents.forEach((evt) => {
+        window.removeEventListener(evt, handleUserActivity);
+      });
+      clearInterval(inactivityChecker);
+    };
+  }, [currentUser]);
 
   // If user is not authenticated, render only the secure login screen
   if (!currentUser) {
@@ -153,6 +191,7 @@ export default function App() {
               paperName={activeQuiz.paperName}
               onFinishTest={handleFinishTest}
               onBackToHome={handleBackToHome}
+              onInactivityLogout={handleLogout}
             />
           ) : testResult ? (
             <ResultSummary
@@ -193,7 +232,18 @@ export default function App() {
 
               {activeTab === "analytics" && <AnalyticsView />}
 
-              {activeTab === "resources" && <StudyResources />}
+              {activeTab === "resources" && (
+                <StudyResources
+                  onStartFullTest={() =>
+                    handleStartQuiz(
+                      getQuestionsForSet("cil_subsidiaries"),
+                      "CIL Subsidiaries, Coal Classification & National Sector 100-Q Master Test",
+                      "CIL Special (100 Qs)",
+                      "Coal Sector & Subsidiaries (High-Yield Master Set)"
+                    )
+                  }
+                />
+              )}
             </>
           )}
         </main>

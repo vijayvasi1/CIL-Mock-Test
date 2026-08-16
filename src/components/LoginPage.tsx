@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Lock, User, Eye, EyeOff, ShieldAlert, ShieldCheck, AlertTriangle, KeyRound, CheckCircle2 } from "lucide-react";
+import { Lock, User, Eye, EyeOff, ShieldAlert, ShieldCheck, AlertTriangle, KeyRound, CheckCircle2, Clock } from "lucide-react";
 
 interface LoginPageProps {
   onLoginSuccess: (username: string) => void;
@@ -19,8 +19,9 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onLoginSuccess }) => {
   const [failedAttempts, setFailedAttempts] = useState<number>(0);
   const [isLocked, setIsLocked] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [inactivityNotice, setInactivityNotice] = useState<string | null>(null);
 
-  // Initialize failed attempts and lockout state from storage
+  // Initialize failed attempts, lockout state, and inactivity notices from storage
   useEffect(() => {
     try {
       const storedAttempts = parseInt(localStorage.getItem(ATTEMPTS_STORAGE_KEY) || "0", 10);
@@ -29,6 +30,12 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onLoginSuccess }) => {
       setFailedAttempts(storedAttempts);
       if (isLockedOut || storedAttempts >= MAX_FAILED_ATTEMPTS) {
         setIsLocked(true);
+      }
+
+      const notice = sessionStorage.getItem("cil_inactivity_logout_notice");
+      if (notice) {
+        setInactivityNotice(notice);
+        sessionStorage.removeItem("cil_inactivity_logout_notice");
       }
     } catch {
       // Fallback if localStorage is restricted
@@ -109,6 +116,16 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onLoginSuccess }) => {
 
         {/* Login Card */}
         <div className="bg-slate-900/90 backdrop-blur-xl border border-slate-800 rounded-2xl shadow-2xl p-6 sm:p-8">
+          {/* Inactivity Alert if user was timed out */}
+          {inactivityNotice && (
+            <div className="mb-6 p-3.5 rounded-xl bg-indigo-950/60 border border-indigo-500/40 text-indigo-200 text-xs flex items-center gap-2.5">
+              <Clock className="w-4 h-4 text-indigo-400 shrink-0" />
+              <div className="flex-1">
+                <span className="font-bold">Session Auto-Logged Out:</span> {inactivityNotice}
+              </div>
+            </div>
+          )}
+
           {/* Security Alert Header */}
           {isLocked ? (
             <div className="mb-6 p-4 rounded-xl bg-red-950/60 border border-red-500/40 text-red-200">
