@@ -1,8 +1,10 @@
-import { Question } from "../types";
+import type { Question } from "../types";
+import { IMPORTED_QUESTION_SETS } from "./importedQuestionSets";
 import { FRESH_PAPER1_QUESTIONS } from "./researchData";
 
 // Load the raw sets and enrich them with structured explanations
 export const ALL_SETS: Record<string, Question[]> = {
+  ...IMPORTED_QUESTION_SETS,
   s7p1: FRESH_PAPER1_QUESTIONS,
 };
 

@@ -1,4 +1,5 @@
-import { Question } from "../types";
+import type { Question } from "../types";
+import { IMPORTED_QUESTION_SETS } from "./importedQuestionSets";
 import { FRESH_PAPER1_QUESTIONS } from "./researchData";
 
 // Helper to provide comprehensive explanation if missing
@@ -15,6 +16,7 @@ function enrichQuestions(questions: Question[]): Question[] {
 
 // Extract base RAW sets with rich explanations added
 export const QUIZ_SETS_RECORD: Record<string, Question[]> = {
+  ...IMPORTED_QUESTION_SETS,
   s7p1: FRESH_PAPER1_QUESTIONS,
 };
 

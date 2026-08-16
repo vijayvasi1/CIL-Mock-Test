@@ -12,7 +12,7 @@ import {
   FileSpreadsheet,
 } from "lucide-react";
 import { Question } from "../types";
-import { ALL_SETS, getQuestionsForSet } from "../data/allSetsData";
+import { getQuestionsForSet } from "../data/allSetsData";
 import { FRESH_PAPER1_QUESTIONS } from "../data/researchData";
 
 interface SetSelectorProps {
@@ -34,10 +34,10 @@ export const SetSelector: React.FC<SetSelectorProps> = ({
   const [selectedTab, setSelectedTab] = useState<"standard" | "research" | "ai">("standard");
 
   const startSet = (setNum: number, paper: "p1" | "p2") => {
-    let questions = getQuestionsForSet(setNum, paper);
+    const questions = getQuestionsForSet(setNum, paper);
     if (!questions || questions.length === 0) {
-      // Default to fresh research questions if set is dynamically routed
-      questions = FRESH_PAPER1_QUESTIONS;
+      alert(`Questions for Set ${setNum} ${paper === "p1" ? "Paper I" : "Paper II"} are not available yet.`);
+      return;
     }
     const paperName =
       paper === "p1"
