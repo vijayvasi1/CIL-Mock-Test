@@ -1,5 +1,6 @@
 import express from "express";
 import path from "path";
+import fs from "fs";
 import { GoogleGenAI, Type } from "@google/genai";
 import dotenv from "dotenv";
 import { getCuratedQuestions } from "./server/questionBank.js";
@@ -418,26 +419,68 @@ Follow the exact JSON schema provided.`;
   }
 });
 
-// Vite middleware / static serving
+// Global API & Server Error Handler
+app.use((err: any, _req: express.Request, res: express.Response, _next: express.NextFunction) => {
+  console.error("Server unhandled error:", err);
+  if (!res.headersSent) {
+    res.status(500).json({ error: "Internal server error", message: err?.message || "Unknown error" });
+  }
+});
+
+// Vite middleware in dev or static production file serving
 async function setupVite() {
-  if (process.env.NODE_ENV !== "production") {
-    const { createServer: createViteServer } = await import("vite");
-    const vite = await createViteServer({
-      server: { middlewareMode: true },
-      appType: "spa",
-    });
-    app.use(vite.middlewares);
+  const distPath = path.join(process.cwd(), "dist");
+  const indexPath = path.join(distPath, "index.html");
+  const isProduction = process.env.NODE_ENV === "production" || (!process.env.VITE_DEV_SERVER && fs.existsSync(indexPath));
+
+  if (!isProduction) {
+    try {
+      const { createServer: createViteServer } = await import("vite");
+      const vite = await createViteServer({
+        server: { middlewareMode: true },
+        appType: "spa",
+      });
+      app.use(vite.middlewares);
+    } catch (viteErr) {
+      console.warn("Vite middleware failed to load, falling back to static files:", viteErr);
+      app.use(express.static(distPath));
+      app.get("*", (_req, res) => {
+        if (fs.existsSync(indexPath)) {
+          res.sendFile(indexPath);
+        } else {
+          res.status(404).send("Application not built. Please run npm run build.");
+        }
+      });
+    }
   } else {
-    const distPath = path.join(process.cwd(), "dist");
     app.use(express.static(distPath));
     app.get("*", (_req, res) => {
-      res.sendFile(path.join(distPath, "index.html"));
+      if (fs.existsSync(indexPath)) {
+        res.sendFile(indexPath);
+      } else {
+        res.status(404).send("Application not built. Please run npm run build.");
+      }
     });
   }
 
-  app.listen(PORT, "0.0.0.0", () => {
-    console.log(`CIL MT System Console Server running on port ${PORT}`);
+  const server = app.listen(PORT, "0.0.0.0", () => {
+    console.log(`CIL MT System Console Server running on http://0.0.0.0:${PORT}`);
+  });
+
+  // Handle graceful container termination in Cloud Run
+  process.on("SIGTERM", () => {
+    console.log("SIGTERM received, closing server...");
+    server.close(() => {
+      process.exit(0);
+    });
+  });
+
+  process.on("SIGINT", () => {
+    server.close(() => {
+      process.exit(0);
+    });
   });
 }
 
 setupVite();
+
